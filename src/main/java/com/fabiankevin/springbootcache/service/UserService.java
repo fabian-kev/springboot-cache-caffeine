@@ -5,6 +5,7 @@ import com.fabiankevin.springbootcache.model.User;
 import com.fabiankevin.springbootcache.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,15 @@ public class UserService {
     }
 
     @CachePut(value = "users", key = "#user.id")
+    @CacheEvict(value = "allUsers", allEntries = true)
     public User create(User user){
+        cacheManager.getCache("users").evict("all");
         user = userRepository.save(user);
         return user;
     }
 
     @CachePut(value = "users", key = "#newUser.id")
+    @CacheEvict(value = "allUsers", allEntries = true)
     public User update(User newUser){
 
 
@@ -42,7 +46,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Cacheable(value = "allUsers")
     public List<User> findAll() {
+        System.out.println("Get all!");
         return userRepository.findAll();
     }
 }
