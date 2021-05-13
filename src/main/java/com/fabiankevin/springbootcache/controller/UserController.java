@@ -16,6 +16,11 @@ public class UserController {
     private final UserService userService;
 
 
+    @GetMapping("/{name}")
+    User getUserByName(@PathVariable String name){
+        return User.builder().name("Ami").build();
+    }
+
 
     @GetMapping("/{id}")
     User getUser(@PathVariable Long id){
